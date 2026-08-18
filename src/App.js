@@ -104,6 +104,7 @@ export default function App() {
         setError("");
       } catch (err) {
         if (err.name !== "AbortError") {
+          console.log(err.message);
           setError(err.message);
         }
       } finally {
@@ -271,7 +272,7 @@ function Movie({ movie, onSelectMovie }) {
       <h3>{movie.Title}</h3>
       <div>
         <p>
-          <span>🗓</span>
+          <span>🗓️</span>
           <span>{movie.Year}</span>
         </p>
       </div>
@@ -319,6 +320,18 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     onAddWatched(newWatchedMovie);
     onCloseMovie();
   }
+
+  useEffect(() => {
+    function callback(e) {
+      if (e.code === "Escape") {
+        onCloseMovie();
+      }
+    }
+    document.addEventListener("keydown", callback);
+    return function () {
+      document.removeEventListener("keydown", callback);
+    };
+  }, [onCloseMovie]);
 
   useEffect(() => {
     async function getMovieDetails() {
